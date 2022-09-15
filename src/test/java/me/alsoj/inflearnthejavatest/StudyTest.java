@@ -2,6 +2,8 @@ package me.alsoj.inflearnthejavatest;
 
 import org.junit.jupiter.api.*;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -10,15 +12,17 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기")
     void create_new_study() {
-        Study study = new Study();
-        assertNotNull(study);
-        assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT여야 한다.");
+        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+            new Study(10);
+            Thread.sleep(300);
+        });
     }
 
     @Test
     @DisplayName("스터디 한 번 더 만들기")
     void create_new_study_again() {
-        System.out.println("create1");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Study((-10)));
+        assertEquals("limit은 0보다 커야 합니다.", exception.getMessage());
     }
 
     @BeforeAll
